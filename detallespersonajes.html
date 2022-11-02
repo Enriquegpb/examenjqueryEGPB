@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <div id="navmenu"></div>
+    <table id="tablapersonajes" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Personaje</th>
+                <th>Imagen</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script src="js/jquery-3.6.1.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#navmenu").load("menu.html");
+                getPersonajes();
+                function getPersonajes() {
+                    var id=getParams();
+                    var request = "/api/Personajes/"+id;
+                    var url = "https://apiseriespersonajes2022.azurewebsites.net";
+
+                    $.ajax({
+                        url: url + request,
+                        method: "get",
+                        dataType: "json",
+                        success: function (data) {
+                            console.log(data);
+                            
+                                
+                                var fila=$("<tr>");
+                                var colNombre=$("<td>",{
+                                    text:data.nombre
+                                });
+                                
+                                var colImagen=$("<td>",{
+                                    
+                                });
+                                
+                                var imagen=$("<img>",{
+                                    src:data.imagen
+                                });
+
+                                
+                              
+
+                                colImagen.append(imagen);
+                                fila.append(colNombre);
+                                fila.append(colImagen);
+                                
+                                $("#tablapersonajes tbody").append(fila);
+                              
+
+                            
+                            
+                        },
+                        error: function (error) {
+                            console.log("error");
+                        }
+                    })
+                }
+                function getParams(){
+                    const params= new URLSearchParams(window.location.search);
+                    const id=params.get("idserie");
+                    console.log(id);
+                    return id;
+
+                }
+            })
+        </script>
+
+</body>
+</html>

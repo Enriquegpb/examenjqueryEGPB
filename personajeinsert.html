@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="capamenu"></div>
+    <label>Usuario:</label>
+    <input type="text" id="cajanombre" /><br />
+    <label>Imagen:</label>
+    <input type="text" id="cajaimagen" /><br />
+    <label>Fecha:</label>
+    <input type="text" id="cajafecha" /><br />
+    <select id="elegirserie"></select>
+    <br />
+    <button id="btninsertar">Insertar perosnaje</button>
+
+ 
+
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#capamenu").load("menu.html");
+            getSeries();
+            function getSeries(){
+                    var request="/api/Series";
+                    var url="https://apiseriespersonajes2022.azurewebsites.net";
+
+                    $.ajax({
+                        url:url+request,
+                        method:"get",
+                        dataType:"json",
+                        success:function(data){
+                            $.each(data,function(key,value){
+                                var itemList=$("<option>",{
+                                    text:value.nombre,
+                                    value:value.idSerie
+                                });
+                                $("#elegirserie").append(itemList);
+                            })
+
+                           
+                        },
+                        error:function(error){
+                            console.log("error");
+                        }
+                    })
+                }
+            $("#btninsertar").click(function () {
+                console.log("Event");
+                var url="https://apiseriespersonajes2022.azurewebsites.net/";
+                var request="api/Personajes";
+                var datos = getJsonPersonaje();
+                console.log(datos);
+                $.ajax({
+                    "url": url + request,
+                    "metthod": "POST",
+                    "data": datos,
+                    "contentType": "application/json",
+                    success: function () {
+                        console.log("Insertado");
+
+                    },
+                    "error": function () {
+                        console.log("Error insert");
+                    }
+                });
+            })
+
+            function getJsonPersonaje(){
+            var nombre = ($("#cajanombre").val());
+            var imagen = ($("#cajaimagen").val());
+            var serie = $("#elegirserie").val();
+
+            var personaje= new Object();
+            personaje.idPersonaje = 0;
+            personaje.nombre = nombre;
+            personaje.imagen = imagen;
+            personaje.idSerie = serie;
+            console.log(personaje);
+            var dataJson = JSON.stringify(personaje);
+            return dataJson;
+        }
+        })
+    </script>
+</body>
+</html>
